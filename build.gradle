@@ -3,9 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.tinyurl'
+group = 'io.github.c4x2'
 version = '2.4.2'
-description = 'Official Java SDK for the TinyURL API'
+description = 'Java client SDK for the TinyURL API (OpenAPI v2.4.2)'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -38,11 +38,12 @@ tasks.named('test') {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'jtinysdk'
             from components.java
             pom {
-                name = 'TinyURL Java SDK'
-                description = 'Java client library for the TinyURL API v2'
-                url = 'https://tinyurl.com'
+                name = 'jTinySDK'
+                description = 'Java client SDK for the TinyURL API (OpenAPI v2.4.2)'
+                url = 'https://github.com/C4X2/jTinySDK'
                 licenses {
                     license {
                         name = 'The Apache License, Version 2.0'
@@ -51,10 +52,15 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'tinyurl'
-                        name = 'TinyURL Support'
-                        email = 'support@tinyurl.com'
+                        id = 'C4X2'
+                        name = 'C4X2'
+                        url = 'https://github.com/C4X2'
                     }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/C4X2/jTinySDK.git'
+                    developerConnection = 'scm:git:ssh://github.com:C4X2/jTinySDK.git'
+                    url = 'https://github.com/C4X2/jTinySDK'
                 }
             }
         }

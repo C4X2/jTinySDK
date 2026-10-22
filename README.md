@@ -1,8 +1,9 @@
-# TinyURL Java SDK
+# jTinySDK (TinyURL Java SDK)
 
 [![Java](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://openjdk.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![API Version](https://img.shields.io/badge/TinyURL%20API-v2.4.2-green.svg)](https://tinyurl.com/app/help)
+[![GitHub](https://img.shields.io/badge/GitHub-C4X2%2FjTinySDK-181717.svg?logo=github)](https://github.com/C4X2/jTinySDK)
 
 A modern, enterprise-ready, fluent Java SDK for the [TinyURL API](https://tinyurl.com). Built on Java standard `java.net.http.HttpClient` with zero heavy HTTP dependencies, Jackson serialization, fluent builders, typed responses, and synchronous/asynchronous support.
 
@@ -74,7 +75,7 @@ A modern, enterprise-ready, fluent Java SDK for the [TinyURL API](https://tinyur
 
 ```groovy
 dependencies {
-    implementation 'com.tinyurl:tinyurl-java-sdk:2.4.2'
+    implementation 'io.github.c4x2:jtinysdk:2.4.2'
 }
 ```
 
@@ -82,8 +83,8 @@ dependencies {
 
 ```xml
 <dependency>
-    <groupId>com.tinyurl</groupId>
-    <artifactId>tinyurl-java-sdk</artifactId>
+    <groupId>io.github.c4x2</groupId>
+    <artifactId>jtinysdk</artifactId>
     <version>2.4.2</version>
 </dependency>
 ```
@@ -94,13 +95,15 @@ dependencies {
 
 Get your API token by logging into your TinyURL account and navigating to [API Settings](https://tinyurl.com/app/settings/api).
 
-You can supply the token directly or set the `TINYURL_API_TOKEN` environment variable.
+You can supply the token directly or set the `TINYURL_API_TOKEN` environment variable / system property.
 
 ```java
 // Method 1: Pass API token directly
 TinyUrlClient client = TinyUrlClient.create("YOUR_API_TOKEN");
 
-// Method 2: Load automatically from environment variable TINYURL_API_TOKEN
+// Method 2: Load automatically from environment variable or system property TINYURL_API_TOKEN
+TinyUrlClient client = TinyUrlClient.create();
+// Or explicitly from environment:
 TinyUrlClient client = TinyUrlClient.fromEnv();
 ```
 
@@ -111,7 +114,7 @@ TinyUrlClient client = TinyUrlClient.fromEnv();
 Shorten a long URL in a single line of code:
 
 ```java
-import com.tinyurl.TinyUrlClient;
+import io.github.c4x2.jtinysdk.TinyUrlClient;
 
 public class App {
     public static void main(String[] args) {
@@ -135,8 +138,8 @@ public class App {
 Use `TinyUrlClient.builder()` for full control over timeouts, authentication mode, custom base URL (e.g. for mock testing), or custom `HttpClient`:
 
 ```java
-import com.tinyurl.TinyUrlClient;
-import com.tinyurl.client.AuthType;
+import io.github.c4x2.jtinysdk.TinyUrlClient;
+import io.github.c4x2.jtinysdk.client.AuthType;
 import java.time.Duration;
 
 TinyUrlClient client = TinyUrlClient.builder()
@@ -168,8 +171,8 @@ String brandedUrl = client.shorten("https://example.com/target", "tinyurl.com", 
 
 #### Create with Full Options
 ```java
-import com.tinyurl.model.CreateTinyUrlRequest;
-import com.tinyurl.model.UrlAliasResponse;
+import io.github.c4x2.jtinysdk.model.CreateTinyUrlRequest;
+import io.github.c4x2.jtinysdk.model.UrlAliasResponse;
 
 CreateTinyUrlRequest request = CreateTinyUrlRequest.builder()
     .url("https://www.example.com/fall-campaign-2024")
@@ -186,8 +189,8 @@ System.out.println("Created: " + response.getData().getTinyUrl());
 
 #### Update Existing TinyURL
 ```java
-import com.tinyurl.model.UpdateTinyUrlRequest;
-import com.tinyurl.model.AliasResponse;
+import io.github.c4x2.jtinysdk.model.UpdateTinyUrlRequest;
+import io.github.c4x2.jtinysdk.model.AliasResponse;
 
 UpdateTinyUrlRequest updateRequest = UpdateTinyUrlRequest.builder()
     .domain("tinyurl.com")
@@ -211,7 +214,7 @@ client.urls().changeUrl("tinyurl.com", "autumn-sale-24", "https://www.example.co
 Retrieve alias details along with total click count (`hits`), creation date, and billable user/team account info:
 
 ```java
-import com.tinyurl.model.UrlAliasHitsBillableResponse;
+import io.github.c4x2.jtinysdk.model.UrlAliasHitsBillableResponse;
 
 UrlAliasHitsBillableResponse details = client.urls().get("tinyurl.com", "autumn-sale-24");
 System.out.println("Destination: " + details.getData().getUrl());
@@ -228,9 +231,9 @@ client.urls().delete("tinyurl.com", "autumn-sale-24");
 Query available or archived links with optional date filtering and tag/alias search:
 
 ```java
-import com.tinyurl.model.GetUrlsListRequest;
-import com.tinyurl.model.UrlsType;
-import com.tinyurl.model.AliasResponse;
+import io.github.c4x2.jtinysdk.model.GetUrlsListRequest;
+import io.github.c4x2.jtinysdk.model.UrlsType;
+import io.github.c4x2.jtinysdk.model.AliasResponse;
 
 GetUrlsListRequest listReq = GetUrlsListRequest.builder()
     .type(UrlsType.AVAILABLE)
@@ -244,8 +247,8 @@ AliasResponse response = client.urls().list(listReq);
 
 #### Count TinyURLs
 ```java
-import com.tinyurl.model.UrlsType;
-import com.tinyurl.model.AliasesCountResponse;
+import io.github.c4x2.jtinysdk.model.UrlsType;
+import io.github.c4x2.jtinysdk.model.AliasesCountResponse;
 
 AliasesCountResponse countRes = client.urls().count(UrlsType.AVAILABLE);
 System.out.println("Total Available TinyURLs: " + countRes.getData().getCount());
@@ -273,7 +276,7 @@ Process hundreds or thousands of URL operations in asynchronous batches.
 
 #### Submit Bulk Batch
 ```java
-import com.tinyurl.model.bulk.*;
+import io.github.c4x2.jtinysdk.model.bulk.*;
 import java.util.List;
 
 BulkStatusResponse batch = client.bulk().create("tinyurl.com", List.of(
@@ -312,9 +315,9 @@ All analytics endpoints accept an `AnalyticsFilter` specifying the start date (`
 
 #### Raw Analytics Logs
 ```java
-import com.tinyurl.model.analytics.AnalyticsFilter;
-import com.tinyurl.model.analytics.RawLogsAnalyticsResponse;
-import com.tinyurl.model.analytics.RawLogsAnalyticsData;
+import io.github.c4x2.jtinysdk.model.analytics.AnalyticsFilter;
+import io.github.c4x2.jtinysdk.model.analytics.RawLogsAnalyticsResponse;
+import io.github.c4x2.jtinysdk.model.analytics.RawLogsAnalyticsData;
 
 AnalyticsFilter filter = AnalyticsFilter.builder()
     .from("2024-01-01 00:00:00")
@@ -330,9 +333,9 @@ for (RawLogsAnalyticsData log : logs.getData()) {
 
 #### Timeline Analytics
 ```java
-import com.tinyurl.model.analytics.TimelineAnalyticsResponse;
-import com.tinyurl.model.analytics.TimelineInterval;
-import com.tinyurl.model.analytics.TimelineItem;
+import io.github.c4x2.jtinysdk.model.analytics.TimelineAnalyticsResponse;
+import io.github.c4x2.jtinysdk.model.analytics.TimelineInterval;
+import io.github.c4x2.jtinysdk.model.analytics.TimelineItem;
 
 TimelineAnalyticsResponse timeline = client.analytics().getTimeline(filter, TimelineInterval.DAY);
 for (TimelineItem point : timeline.getData().getDataset()) {
@@ -343,7 +346,7 @@ for (TimelineItem point : timeline.getData().getDataset()) {
 
 #### General Analytics (Browser, OS, Device)
 ```java
-import com.tinyurl.model.analytics.GeneralAnalyticsResponse;
+import io.github.c4x2.jtinysdk.model.analytics.GeneralAnalyticsResponse;
 
 GeneralAnalyticsResponse general = client.analytics().getGeneral(filter);
 System.out.println("Total Clicks: " + general.getData().getTotal());
@@ -351,8 +354,8 @@ System.out.println("Total Clicks: " + general.getData().getTotal());
 
 #### Weekday & Hourly Popularity
 ```java
-import com.tinyurl.model.analytics.WeekdaysPopularityAnalyticsResponse;
-import com.tinyurl.model.analytics.HoursPopularityAnalyticsResponse;
+import io.github.c4x2.jtinysdk.model.analytics.WeekdaysPopularityAnalyticsResponse;
+import io.github.c4x2.jtinysdk.model.analytics.HoursPopularityAnalyticsResponse;
 
 // Weekdays (7 elements: Sun-Sat)
 WeekdaysPopularityAnalyticsResponse weekdays = client.analytics().getWeekdaysPopularity(filter);
@@ -402,7 +405,7 @@ client.urls().createAsync(CreateTinyUrlRequest.builder().url("https://example.co
 
 ## Error Handling
 
-Errors returned by the TinyURL API (both HTTP error codes and API JSON response codes) are mapped to a structured unchecked exception hierarchy under `com.tinyurl.exception`:
+Errors returned by the TinyURL API (both HTTP error codes and API JSON response codes) are mapped to a structured unchecked exception hierarchy under `io.github.c4x2.jtinysdk.exception`:
 
 ```
 TinyUrlException (Unchecked base exception)
@@ -417,7 +420,8 @@ TinyUrlException (Unchecked base exception)
 Example:
 
 ```java
-import com.tinyurl.exception.*;
+import io.github.c4x2.jtinysdk.exception.*;
+import io.github.c4x2.jtinysdk.model.CreateTinyUrlRequest;
 
 try {
     client.urls().create(CreateTinyUrlRequest.builder().url("https://example.com").alias("taken").build());
@@ -449,9 +453,9 @@ The repository uses Gradle wrapper. To build and execute all unit and integratio
 ```
 
 Built JAR artifacts will be located in `build/libs/`:
-- `tinyurl-java-sdk-2.4.2.jar` (Library binary)
-- `tinyurl-java-sdk-2.4.2-sources.jar` (Source code)
-- `tinyurl-java-sdk-2.4.2-javadoc.jar` (Javadoc documentation)
+- `jtinysdk-2.4.2.jar` (Library binary)
+- `jtinysdk-2.4.2-sources.jar` (Source code)
+- `jtinysdk-2.4.2-javadoc.jar` (Javadoc documentation)
 
 ---
 
